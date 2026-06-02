@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencloudskill.dev/schemas/domain.schema.json",
+  "title": "OpenCloudSkillHub Domain System Registration",
+  "description": "Structural contract for domains/<id>.yaml. Semantic/safety/governance rules (D-SAFE-1 https, D-REF-1 cross-ref, D-GOV-1 trust) are enforced by validate_domain beyond this schema. See docs/domain-registration-contract.md.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "id",
+    "name",
+    "domain",
+    "summary",
+    "mcp_endpoint",
+    "entry_resource",
+    "teaches",
+    "keywords",
+    "safety_level"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "enum": ["1"] },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "domain": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "mcp_endpoint": { "type": "string", "format": "uri" },
+    "transport": { "type": "string", "enum": ["streamable-http", "sse", "http"] },
+    "entry_resource": { "type": "string", "minLength": 1 },
+    "also_read": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "teaches": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$" }
+    },
+    "requires_general_skills": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+    },
+    "keywords": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "safety_level": {
+      "type": "string",
+      "enum": ["public_data", "internal_data", "production_data"]
+    },
+    "status": { "type": "string", "enum": ["draft", "active", "deprecated"] },
+    "maintainer": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "required": ["name"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "contact": { "type": "string" },
+            "url": { "type": "string", "format": "uri" }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+# Trust levels assigned BY THE PLATFORM. Never self-declared in a manifest or
+# registration (validators reject a self-declared `trust` field: R-GOV-1 / D-GOV-1).
+#
+# levels: official | community | unverified   (default when absent: unverified)
+
+skills:
+  ocr: official
+
+domains:
+  recruitos: official

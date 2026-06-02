@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local OpenCloudSkillHub working dirs (skill installs live in the user profile,
+# but ignore any local stray ones too)
+.opencloudskillhub/
+
+# Feedback log (runtime-written; not source)
+registry/feedback/*.jsonl
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
