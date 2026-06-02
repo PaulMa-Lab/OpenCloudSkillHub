@@ -77,17 +77,28 @@ def _valid(token: str) -> bool:
 
 async def register(request: Request) -> JSONResponse:
     try:
-        body = await request.json()
-    except Exception:  # noqa: BLE001 — tolerate empty/invalid body
-        body = {}
-    name = (body or {}).get("name") or "anonymous"
-    token = secrets.token_urlsafe(24)
-    data = _load()
-    data.setdefault("tokens", {})[_hash(token)] = {
-        "name": str(name)[:80],
-        "created": datetime.now(timezone.utc).isoformat(),
-    }
-    _save(data)
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001 — tolerate empty/invalid body
+            body = {}
+        name = (body or {}).get("name") or "anonymous"
+        token = secrets.token_urlsafe(24)
+        data = _load()
+        data.setdefault("tokens", {})[_hash(token)] = {
+            "name": str(name)[:80],
+            "created": datetime.now(timezone.utc).isoformat(),
+        }
+        _save(data)
+    except Exception as exc:  # noqa: BLE001 — surface the cause (test-phase self-diagnosis)
+        return JSONResponse(
+            {
+                "error": "register_failed",
+                "detail": f"{type(exc).__name__}: {exc}",
+                "tokens_file": str(_tokens_path()),
+                "hint": "通常是 token 文件目录不可写：确认服务用户对 OCSH_TOKENS_FILE 所在目录有写权限。",
+            },
+            status_code=500,
+        )
     return JSONResponse(
         {
             "token": token,
