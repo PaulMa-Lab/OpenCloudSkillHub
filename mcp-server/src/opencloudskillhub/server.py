@@ -153,6 +153,25 @@ def detect_environment(skill_id: str | None = None) -> dict[str, Any]:
 
 
 @mcp.tool()
+def assess_environment(skill_id: str, env_report: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Remote-friendly fit check: YOU report your environment (os, python_version, arch,
+    disk_free_mb, in_venv) and the Hub judges whether the skill fits. Use this instead of
+    detect_environment when the Hub is remote (it cannot probe your machine). Read-only."""
+    return exec_support.assess_environment(skill_id, env_report)
+
+
+@mcp.tool()
+def get_skill_asset(skill_id: str, rel_path: str) -> dict[str, Any]:
+    """Fetch the CONTENT of a course asset (e.g. assets/verify_ocr.py,
+    requirements/rapidocr.txt, assets/runner_template.py) so you can run it locally.
+    Needed when the Hub is remote and the file lives on the server. Read-only."""
+    try:
+        return {"skill_id": skill_id, "rel_path": rel_path, "content": registry.read_skill_asset(skill_id, rel_path)}
+    except (FileNotFoundError, ValueError) as exc:
+        return {"skill_id": skill_id, "rel_path": rel_path, "error": str(exc)}
+
+
+@mcp.tool()
 def generate_install_plan(skill_id: str, profile_id: str | None = None) -> dict[str, Any]:
     """Produce a step-by-step install PLAN for a skill+profile (does NOT execute).
     Each step carries risk / approval_required / rollback. The host runs the
@@ -216,8 +235,15 @@ def submit_skill_feedback(
 
 
 def main() -> None:
-    """Console-script / module entry point. Runs over stdio by default."""
-    mcp.run()
+    """Entry point. Stdio by default; `--http` serves streamable-http (ADR-005)."""
+    import sys
+
+    if "--http" in sys.argv:
+        from .serve_http import serve
+
+        serve()
+    else:
+        mcp.run()
 
 
 if __name__ == "__main__":

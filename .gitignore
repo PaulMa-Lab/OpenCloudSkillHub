@@ -17,6 +17,12 @@ env/
 # Feedback log (runtime-written; not source)
 registry/feedback/*.jsonl
 
+# Issued agent tokens (runtime-written secrets; never commit)
+registry/tokens.json
+
+# Deployment env file (may hold the admin token)
+deploy/ocsh.env
+
 # OS / editor
 .DS_Store
 Thumbs.db

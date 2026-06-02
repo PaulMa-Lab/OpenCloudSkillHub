@@ -41,6 +41,16 @@
 - **不要让 Hub 执行任何课程脚本来「服务化」**：远程也不破模型 A。若将来想动态预审，必须隔离沙箱且只算启发式（ADR-004）。
 
 ## Uncertainty
-- mcp 1.27.2 的 FastMCP HTTP/鉴权 API 细节，实现时确认（计划用 `streamable_http_app()` + Starlette 中间件做 bearer 校验）。
-- openclaw/hermes 的 MCP 客户端是否支持 **streamable-http + 自定义 Authorization 头**；若只支持 SSE 则改 serve SSE。**待用户确认。**
-- 腾讯轻量的防火墙/安全组需放行 443（及 80 给 ACME），这是用户在服务器侧操作。
+- ~~mcp 1.27.2 的 FastMCP HTTP/鉴权 API~~ 已确认：`streamable_http_app()` + 纯 ASGI bearer 中间件，本地实测可用。
+- openclaw/hermes 的 MCP 客户端：**已确认用 streamable-http**。
+
+## 部署决定（2026-06-02 补充，用户确认）
+- **目标机**：腾讯云轻量 **Ubuntu，无域名那台**（有域名的跑着 RecruitOS，不动它）→ **IP only**。
+- **测试期安全取舍**：邀请制测试，**明文 HTTP + IP + 轻量 token**，**先不做 TLS/域名**。
+  token 走明文有泄露风险，但测试期可接受（无敏感数据、Hub 不执行、执行侧另有批准）。
+- **token 语义**：身份 + 自注册句柄，**非安全边界**；自注册≈开放读。
+- **安全重心转移**（用户洞察，已纳入）：现阶段不防网络攻击；**真正要保的是「平台上能学到的知识/技能/工具本身是否安全」= 课程供应链（ADR-004）**。这是后续重点。
+- **实现落地**：`--http` serve 模式（`serve_http.py`）；`POST /register` 自注册；纯 ASGI bearer 校验（放行 /register、/healthz）；token 存 hash 于 `registry/tokens.json`（gitignored）；可选 `OCSH_ADMIN_TOKEN`。
+  远程适配工具：`assess_environment`（agent 自报环境）、`get_skill_asset`（拉资产内容）、`generate_install_plan` 内联依赖。
+  部署件见 `deploy/`（systemd + env 模板 + Ubuntu/腾讯 步骤）。**TLS（Caddy 反代）留作非测试期硬化项**，步骤已在 deploy/README §8 备好。
+- **未变底线**：保留 stdio 模式；Hub 远程也从不执行（模型 A）。

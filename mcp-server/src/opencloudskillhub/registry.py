@@ -308,6 +308,25 @@ def read_skill_resource(skill_id: str, doc: str) -> str:
     return target.read_text(encoding="utf-8")
 
 
+def read_skill_asset(skill_id: str, rel_path: str) -> str:
+    """Serve a course's asset file content (verify script, runner template, requirements)
+    so a REMOTE agent can fetch it and run it locally. Text only; path confined to the
+    package dir. Raises FileNotFoundError / ValueError on bad input."""
+    manifest, pkg = manifest_and_dir(skill_id)
+    if manifest is None or pkg is None:
+        raise FileNotFoundError(f"unknown skill: {skill_id}")
+    target = (pkg / rel_path).resolve()
+    pkg_resolved = pkg.resolve()
+    if target != pkg_resolved and pkg_resolved not in target.parents:
+        raise FileNotFoundError("asset path escapes package")
+    if not target.is_file():
+        raise FileNotFoundError(f"asset not found: {rel_path}")
+    try:
+        return target.read_text(encoding="utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError("binary assets are not supported over get_skill_asset (text only)") from exc
+
+
 def manifest_and_dir(skill_id: str) -> tuple[dict[str, Any] | None, Path | None]:
     """Return (manifest, package_dir) for a skill id, or (None, None)."""
     for manifest in scan():

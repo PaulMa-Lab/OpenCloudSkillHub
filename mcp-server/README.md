@@ -50,6 +50,19 @@ empty in milestone 1), and `SELFTEST PASS`.
 
 It speaks MCP over stdio and waits for a client; there is no human-facing output.
 
+### Remote (streamable-http) mode
+
+```powershell
+$env:OCSH_HOST="127.0.0.1"; $env:OCSH_PORT="8848"
+.\.venv\Scripts\python.exe -m opencloudskillhub.server --http
+```
+
+Serves MCP at `/mcp` (streamable-http) plus `POST /register` (self-service token) and
+`GET /healthz`. Bearer-token auth is on by default (`OCSH_AUTH=off` to disable). For
+server deployment (Ubuntu / Tencent Lightweight, IP + token, no TLS in the test phase)
+see [`../deploy/README.md`](../deploy/README.md) and ADR-005. The Hub never executes
+user-machine actions, local or remote (model A).
+
 ## Connect from Claude Code
 
 Add to your MCP config (project `.mcp.json` or via `claude mcp add`). Use absolute paths.

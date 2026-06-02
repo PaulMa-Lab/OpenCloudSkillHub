@@ -93,6 +93,45 @@ def detect_environment(skill_id: str | None = None) -> dict[str, Any]:
     return info
 
 
+def assess_environment(skill_id: str, env_report: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Remote counterpart of detect_environment: a remote Hub cannot probe the agent's
+    machine, so the AGENT reports its environment (os, python_version, arch, disk_free_mb,
+    in_venv) and the Hub judges fit. Skill-agnostic; reads the manifest. Read-only."""
+    env_report = env_report or {}
+    manifest, _ = registry.manifest_and_dir(skill_id)
+    if manifest is None:
+        return {"error": f"unknown skill: {skill_id}"}
+
+    os_field = str(env_report.get("os", "")).lower()
+    os_token = (
+        "windows" if "win" in os_field
+        else "macos" if ("darwin" in os_field or "mac" in os_field)
+        else "linux" if "linux" in os_field
+        else None
+    )
+    platforms = manifest.get("platforms") or []
+    pyver = str(env_report.get("python_version", ""))
+    py_ok = pyver.startswith("3.12") or pyver.startswith("3.13")
+    py_note = (
+        "未提供 python_version" if not pyver
+        else "ok" if py_ok
+        else f"建议 3.12；检测到 {pyver}（3.14+ 可能缺 OCR 依赖 wheel）"
+    )
+    return {
+        "skill_id": skill_id,
+        "reported_env": env_report,
+        "platform_supported": (os_token in platforms) if os_token else None,
+        "python_ok": py_ok if pyver else None,
+        "python_note": py_note,
+        "profiles": [p.get("id") for p in (manifest.get("install_profiles") or [])],
+        "required_tools": manifest.get("tools_required", []),
+        "note": (
+            "远程 Hub 无法探测你的机器：请在 env_report 上报 os/python_version/arch/disk_free_mb。"
+            "执行仍在你侧、需你侧批准（模型 A）。"
+        ),
+    }
+
+
 # --- generate_install_plan --------------------------------------------------
 
 def generate_install_plan(skill_id: str, profile_id: str | None = None, platform_key: str = "windows") -> dict[str, Any]:
@@ -123,8 +162,21 @@ def generate_install_plan(skill_id: str, profile_id: str | None = None, platform
         add("upgrade_pip", "升级 pip", f'"{vpy}" -m pip install -U pip', risk="low", rb=rollback)
 
     for req in profile.get("requirements", []) or []:
-        req_abs = str(pkg / req)
-        add("install_requirements", f"安装依赖（profile={pid}）", f'"{vpy}" -m pip install -r "{req_abs}"', risk=profile.get("risk_level", "medium"), rb=rollback)
+        req_path = pkg / req
+        packages: list[str] = []
+        try:
+            for line in req_path.read_text(encoding="utf-8").splitlines():
+                s = line.strip()
+                if s and not s.startswith("#"):
+                    packages.append(s)
+        except OSError:
+            packages = []
+        # Inline the package list so a REMOTE agent gets a self-contained command
+        # (the requirements file lives on the server; the agent can't -r a server path).
+        cmd = f'"{vpy}" -m pip install ' + " ".join(packages) if packages else f'"{vpy}" -m pip install -r "{req_path}"'
+        add("install_requirements", f"安装依赖（profile={pid}）", cmd, risk=profile.get("risk_level", "medium"), rb=rollback)
+        steps[-1]["packages"] = packages
+        steps[-1]["requirements_ref"] = req
 
     verification = manifest.get("verification") or {}
     smoke = verification.get("smoke_test")
