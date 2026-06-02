@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "opencloudskillhub": {
+      "command": "D:\\Github\\OpenCloudSkillHub\\mcp-server\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "opencloudskillhub.server"],
+      "env": { "OCSH_HOME": "D:\\Github\\OpenCloudSkillHub" }
+    }
+  }
+}
