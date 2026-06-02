@@ -16,7 +16,7 @@ sudo apt install -y python3.12 python3.12-venv git    # 若源没有 3.12，用 
 
 ```bash
 sudo mkdir -p /opt/opencloudskillhub && sudo chown $USER /opt/opencloudskillhub
-git clone <你的私有仓地址> /opt/opencloudskillhub      # 私有仓：用 deploy key 或 PAT
+git clone https://github.com/PaulMa-Lab/OpenCloudSkillHub.git /opt/opencloudskillhub   # 公有仓，免鉴权
 cd /opt/opencloudskillhub
 python3.12 -m venv .venv
 ./.venv/bin/python -m pip install -U pip
