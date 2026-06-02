@@ -1,0 +1,14 @@
+schema_version: "1"
+id: baddomain
+name: Bad Domain
+domain: testing
+summary: Deliberately broken to exercise domain validator codes.
+mcp_endpoint: http://insecure.example.com/mcp
+transport: streamable-http
+entry_resource: system://guide
+teaches: [do_domain_thing]
+requires_general_skills: [nonexistent-skill]
+keywords: [testing]
+safety_level: top_secret
+status: draft
+trust: official

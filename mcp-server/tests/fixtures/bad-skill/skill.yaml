@@ -1,0 +1,22 @@
+schema_version: "1"
+id: bad
+name: Bad Skill
+version: 0.1.0
+summary: "This summary is deliberately far too long so that it exceeds the one hundred and forty character recommended maximum length, tripping R-CONS-3 warn."
+maintainer: { name: opencloudskill }
+tags: []
+capabilities: [does_a_thing]
+risk_level: low
+platforms: [windows]
+tools_required: [shell_required, model_download]
+resources:
+  guide: guide/guide.md
+safety: guide/safety.md
+verification:
+  smoke_test: ../escape.py
+trust: official
+status: draft
+install:
+  windows:
+    guide: guide/guide.md
+    default_profile: nonexistent

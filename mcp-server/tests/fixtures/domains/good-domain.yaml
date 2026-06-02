@@ -1,0 +1,12 @@
+schema_version: "1"
+id: gooddomain
+name: Good Domain
+domain: testing
+summary: A well-formed domain registration used to test the domain validator.
+mcp_endpoint: https://example.com/mcp
+transport: streamable-http
+entry_resource: system://guide
+teaches: [do_domain_thing]
+keywords: [testing, demo]
+safety_level: internal_data
+status: active

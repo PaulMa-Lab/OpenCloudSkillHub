@@ -1,0 +1,18 @@
+schema_version: "1"
+id: good
+name: Good Skill
+version: 0.1.0
+summary: A well-formed reference package used to test the validator.
+maintainer: { name: opencloudskill }
+tags: [test, reference]
+capabilities: [does_a_thing]
+risk_level: medium
+platforms: [windows]
+tools_required: [file_read, file_write]
+resources:
+  guide: guide/guide.md
+  safety: guide/safety.md
+safety: guide/safety.md
+verification:
+  smoke_test: assets/verify.py
+status: active
