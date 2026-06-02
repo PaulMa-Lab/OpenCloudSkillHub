@@ -1,0 +1,57 @@
+schema_version: "1"
+id: ocr
+name: OCR Skill
+version: 0.1.0
+summary: 从图片/扫描件/截图/图片型 PDF 中提取文字（本地优先，Windows，CPU 友好）。
+description: >
+  教会来访 Agent 在用户的 Windows 机器上、于用户批准下，安装并验证一个本地 OCR 能力，
+  然后用它把图片中的文字提取出来。第一门 reference course，用来验证平台机制。
+maintainer: { name: opencloudskill }
+source: https://github.com/opencloudskill/opencloudskill-ocr
+license: MIT
+tags: [ocr, text-extraction, vision, chinese, english, windows, 文字识别, 图片转文字, 截图, 扫描件]
+capabilities: [image_to_text, scanned_pdf_to_text]
+risk_level: medium
+platforms: [windows]
+tools_required: [file_read, file_write, shell_optional, network_outbound, model_download]
+resources:
+  guide: guide/guide.md
+  install_windows: guide/install-windows.md
+  verify: guide/verify.md
+  recipes: guide/recipes.md
+  troubleshooting: guide/troubleshooting.md
+  safety: guide/safety.md
+safety: guide/safety.md
+troubleshooting: guide/troubleshooting.md
+diagnostics: assets/diagnostics.yaml
+recipes: guide/recipes.md
+install:
+  windows:
+    guide: guide/install-windows.md
+    default_profile: rapidocr
+install_profiles:
+  - id: rapidocr
+    label: "RapidOCR (onnxruntime, CPU, 推荐)"
+    platforms: [windows]
+    requirements: [requirements/rapidocr.txt]
+    creates_venv: true
+    est_download_mb: 120
+    risk_level: medium
+    notes: "纯 pip，CPU 友好，中文/英文都好；MVP 默认。首次运行会下载 OCR 模型。"
+  - id: tesseract
+    label: "Tesseract (英文优先，需系统二进制)"
+    platforms: [windows]
+    requirements: [requirements/tesseract.txt]
+    creates_venv: true
+    est_download_mb: 30
+    risk_level: medium
+    notes: "需另装 UB-Mannheim 的 tesseract.exe 并配 PATH；中文偏弱，配置较繁。"
+verification:
+  smoke_test: assets/verify_ocr.py
+  expected:
+    contains: ["HELLO", "OCR", "12345"]
+success_criteria:
+  installed: "目标 venv 中能 import 选定引擎且引擎可初始化"
+  verified: "verify_ocr.py 对内置测试图识别出 expected.contains 中的标记文本"
+  usable: "能对用户提供的一张真实图片返回正确文字"
+status: active

@@ -1,0 +1,51 @@
+# Structured diagnostics for diagnose_error(skill_id="ocr", logs=...).
+# The platform does GENERIC keyword matching over these rules; the OCR-specific
+# knowledge lives here, in the course package (ADR-003). Keep this in sync with
+# guide/troubleshooting.md (the human-readable companion).
+#
+# Each rule: id, match (case-insensitive keywords; any hit = match), cause, actions, ref.
+
+rules:
+  - id: numpy_incompat
+    match: ["numpy 1.x", "_ARRAY_API", "binary incompatibility", "compiled using numpy"]
+    cause: numpy 版本与 onnxruntime/opencv 编译版本不兼容（常见 numpy 2.x 冲突）。
+    actions:
+      - "在该 venv 重装钉版 numpy：python -m pip install 'numpy<2'"
+      - "若仍冲突，重建 venv 后先装 numpy 再装 rapidocr_onnxruntime"
+    ref: guide/troubleshooting.md
+
+  - id: rapidocr_missing
+    match: ["no module named 'rapidocr_onnxruntime'", "no module named rapidocr"]
+    cause: 选了 rapidocr profile 但依赖未装到当前 venv。
+    actions:
+      - "确认用的是该 skill 的 venv 解释器"
+      - "python -m pip install -r requirements/rapidocr.txt"
+    ref: guide/install-windows.md
+
+  - id: onnxruntime_missing
+    match: ["no module named 'onnxruntime'"]
+    cause: onnxruntime 未装或装坏。
+    actions: ["python -m pip install onnxruntime"]
+    ref: guide/troubleshooting.md
+
+  - id: opencv_dll
+    match: ["dll load failed", "importerror: dll", "cv2"]
+    cause: opencv 运行库缺失（常见缺 VC++ 运行库），或装了带 GUI 的 opencv-python。
+    actions:
+      - "安装 Microsoft Visual C++ Redistributable"
+      - "改用 opencv-python-headless：python -m pip uninstall -y opencv-python; python -m pip install opencv-python-headless"
+    ref: guide/troubleshooting.md
+
+  - id: download_failed
+    match: ["urlerror", "timed out", "max retries", "connectionerror", "failed to download", "ssl"]
+    cause: 模型或依赖下载失败（网络/代理/被墙）。
+    actions:
+      - "重试；如在受限网络，配置 pip 镜像源"
+      - "预先下载模型后离线运行"
+    ref: guide/troubleshooting.md
+
+  - id: no_wheel
+    match: ["could not find a version", "no matching distribution"]
+    cause: 找不到匹配 wheel——常见原因是 Python 版本过新（如 3.14）。
+    actions: ["改用 Python 3.12 重建 venv（见 install 指南）"]
+    ref: guide/install-windows.md

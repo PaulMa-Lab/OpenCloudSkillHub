@@ -1,0 +1,34 @@
+schema_version: "1"
+id: recruitos
+name: RecruitOS
+domain: recruiting
+summary: 招聘领域 AI Native system；教来访 Agent 在本系统内完成招聘任务（数据沉淀在 RecruitOS）。
+mcp_endpoint: https://zhaopin.songtao.me/mcp
+transport: streamable-http
+entry_resource: system://guide
+also_read:
+  - system://changelog
+  - system://methodology/jd-generation
+teaches:
+  - resume_screening
+  - pipeline_management
+  - jd_generation
+  - interview_preparation
+requires_general_skills:
+  - pdf-extraction
+  - structured-reporting
+keywords:
+  - 招聘
+  - 简历
+  - JD
+  - 岗位
+  - 面试
+  - hiring
+  - recruiting
+  - pipeline
+safety_level: production_data
+status: active
+maintainer:
+  name: RecruitOS
+# NOTE: entry_resource / also_read URIs belong to RecruitOS's OWN MCP, not this Hub.
+# The Hub only points here; it does NOT host or mirror RecruitOS's guide content.

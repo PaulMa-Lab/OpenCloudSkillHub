@@ -1,0 +1,11 @@
+# RapidOCR (default OCR profile) — Windows + Python 3.12 + CPU.
+# PINNED to known-good versions verified on a real install (ADR-002):
+#   2026-06-02, Windows, Python 3.12.3 — venv install + verify_ocr.py PASS.
+# RapidOCR bundles its OCR models in the wheel, so no separate model download is
+# needed for the default models (first run is fast, offline-capable).
+rapidocr_onnxruntime==1.4.4
+onnxruntime==1.26.0
+opencv-python==4.11.0.86
+numpy==1.26.4
+# Note: for a truly headless server you may swap opencv-python -> opencv-python-headless
+# (uninstall opencv-python first). The pinned opencv-python above is what was verified.

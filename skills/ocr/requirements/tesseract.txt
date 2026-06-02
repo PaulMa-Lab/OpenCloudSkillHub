@@ -1,0 +1,6 @@
+# Tesseract profile (English-first, lighter). pip side only:
+pytesseract
+pillow
+# IMPORTANT: also requires the Tesseract BINARY on PATH, which is NOT pip-installable.
+# On Windows install the UB-Mannheim build and add its folder to PATH, then add the
+# Chinese language pack if needed. See guide/install-windows.md.
