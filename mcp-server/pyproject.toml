@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opencloudskillhub"
+version = "0.1.0"
+description = "OpenCloudSkillHub platform core — an MCP-first capability hub / agent school. Skill-agnostic; courses live as skill packages."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "MIT" }
+dependencies = [
+  "mcp[cli]>=1.0",
+  "pyyaml>=6.0",
+  "jsonschema>=4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+opencloudskillhub = "opencloudskillhub.server:main"
+ocsh-validate = "opencloudskillhub.validate:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
