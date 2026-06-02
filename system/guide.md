@@ -66,7 +66,6 @@ OpenCloudSkillHub 是一个**面向 Agent 的能力学习与装配中心**。它
 |---|---|---|---|
 | `list_skills` / `search_skills` | 是 | 否 | 浏览/搜索课程 |
 | `get_skill_detail(skill_id)` | 是 | 否 | 取某课全貌（manifest/resources/风险） |
-| `recommend_skill_stack(task)` | 是 | 否 | 据任务推荐课程组合（会给 confidence，可能为空） |
 | `detect_environment(skill_id?)` | 是 | 否 | 探测本机（OS/Python/venv/GPU/磁盘/网络等） |
 | `generate_install_plan(skill_id, {profile_id?})` | 是（只产计划） | 否（但计划内步骤多需批准） | 把课程+环境变成可执行的分步计划 |
 | `get_verification_plan(skill_id)` | 是 | 否 | 返回「怎么验证 + 期望结果」，由你执行验证脚本后比对 |

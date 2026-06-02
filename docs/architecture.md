@@ -5,6 +5,10 @@
 > 范围：整体架构 + 第一个 MVP skill（OCR）。
 > 原则：不假设一切可自动完成；不确定处直接标注；对过激设想给出 pushback。
 
+> **实现进度（2026-06-02 更新）**：本文是最初设计（v0.2）。产品已演进，**领域目录/指路/交接**等新主线见 `architecture-v0.3-domains-and-handoff.md`（与本文冲突处以 v0.3 为准）。
+> MVP 平台机制 **M1–M7 已全部实现并验证**（见 §15 与 v0.3 §12）。
+> **实现期的一处工具合并**：本文设计的 `recommend_skill_stack` 在实现中被并入更通用的 `recommend_learning_path`（后者同时返回候选领域系统与通用技能，`general_skill_candidates` 即原 skill stack 的职责）；运行时不再单列 `recommend_skill_stack`。下文出现该名称处均按此理解。
+
 ---
 
 ## 0. 阅读前必须先接受的一个核心判断（贯穿全文）
@@ -536,6 +540,9 @@ D:\Github\OpenCloudSkillHub\
 ---
 
 ## 15. 第一阶段实现计划（里程碑）
+
+> **状态（2026-06-02）**：下面是 v0.2 时的最初 5 里程碑计划，**仅作历史记录**。产品演进后里程碑被重排（领域目录/指路/交接加入），**权威的里程碑表见 `architecture-v0.3-domains-and-handoff.md` §12，且 M1–M7 已全部完成**。
+> 本节里的 OCR 专属工具名（`recommend_ocr_setup`/`verify_ocr_install`/`diagnose_ocr_error`/`run_sample_ocr`）已按 ADR-003 替换为泛化工具（`recommend_learning_path`/`get_verification_plan`/`diagnose_error` + 课程数据），实际实现以泛化版为准。
 
 **里程碑 1 — 脚手架 + 可跑的 MCP server**
 - 建目录骨架；`pyproject.toml`；FastMCP server 能 stdio 起来、能被 Claude Code 连上。

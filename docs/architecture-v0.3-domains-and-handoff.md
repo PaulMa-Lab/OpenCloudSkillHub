@@ -261,16 +261,17 @@ maintainer: { name: ... }
 
 ## 12. 对里程碑计划的修订
 
-| 里程碑 | 内容 | 性质 |
-|---|---|---|
-| M1 ✅ | 平台脚手架 + system resources + 泛化只读工具 | 平台 dev（已完成） |
-| M2 ✅ | 课程包契约 + `validate_skill_package` + catalog 校验 | 平台 dev（已完成） |
-| **M3（重定位）** | **OCR seed 课程内容**（manifest+guide+assets，本地目录，过校验） | **内容/课程作者**（非平台逻辑；MVP 我们写一份 reference） |
-| **M4（新）** | **领域目录层**：domain registration 契约+校验、`domains://catalog`、`list/get_domain_system`、`recommend_learning_path`、`domains/recruitos.yaml` seed | 平台 dev |
-| **M5（新）** | **泛化执行支持** + 真机：`detect_environment`/`generate_install_plan`/`get_verification_plan`/`diagnose_error`，真机装 RapidOCR | 平台 dev + 真机 |
-| **M6** | **交接教学规范** `school://handoff-model`（仅教学，无状态）+ `submit_course_feedback` | 平台 dev（轻） |
-| **M7** | 端到端 Agent 测试：recommend_learning_path → 学 OCR → 给出 RecruitOS 入学指引 | 验证假设 |
+| 里程碑 | 内容 | 性质 | 状态 |
+|---|---|---|---|
+| M1 | 平台脚手架 + system resources + 泛化只读工具 | 平台 dev | ✅ 完成 |
+| M2 | 课程包契约 + `validate_skill_package` + catalog 校验 | 平台 dev | ✅ 完成 |
+| M3（重定位） | OCR seed 课程内容（manifest+guide+assets，本地目录，过校验） | 内容/课程作者（MVP 我们写一份 reference） | ✅ 完成（validate 0/0，trust=official） |
+| M4（新） | 领域目录层：domain 契约+校验、`domains://catalog`、`list/get_domain_system`、`recommend_learning_path`、`recruitos.yaml` seed | 平台 dev | ✅ 完成 |
+| M5（新） | 泛化执行支持 + 真机：`detect_environment`/`generate_install_plan`/`get_verification_plan`/`diagnose_error`，真机装 RapidOCR | 平台 dev + 真机 | ✅ 完成（RapidOCR 真机验证通过，ADR-002） |
+| M6 | 交接教学规范 `school://handoff-model`（仅教学，无状态）+ `submit_skill_feedback` | 平台 dev（轻） | ✅ 完成 |
+| M7 | 端到端走查：recommend_learning_path → 学 OCR → 真实 verify | 验证假设 | ⚠️ 脚本版完成（examples/）；**真实 LLM agent 自主性未验证** |
 
+> M7 的脚本走查证明了机制机械连通，**未证明真实 LLM agent 会自己按此顺序行动**——这仍是唯一未验证的核心假设，只能接真实 Claude Code 实测。
 > 领域系统内部 guide 化、connector、用户上传、评测中心 —— 全部第二阶段。
 
 ---

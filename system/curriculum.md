@@ -19,7 +19,7 @@
 - **进入下一步的判据**：你清楚「平台只给知识和计划，执行与审批由你和用户负责」。
 
 ## 阶段 1 · 选课（Select）
-- **读**：`skills://catalog`；用 `search_skills(task)` / `recommend_skill_stack(task)`。
+- **读**：`skills://catalog`；用 `search_skills(task)` / `recommend_learning_path(task)`（后者同时给出候选领域系统与通用技能）。
 - **做**：把用户任务映射到一门或几门课。
 - **判据**：命中一个候选课程的 `id`。
 - **失败/无命中**：如实告诉用户「目前没有匹配的课程」，并用 `submit_skill_feedback` 回传「缺这类能力」。**不要假装有能力。**
