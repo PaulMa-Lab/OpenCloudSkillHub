@@ -142,6 +142,15 @@ class _AuthASGI:
 
 
 def build_app():
+    # MCP's streamable-http has DNS-rebinding protection that, by default, only allows
+    # a localhost Host header (it returns 421 Misdirected Request otherwise). That guard
+    # exists to stop browsers from reaching a *local* MCP server; it does not apply to an
+    # intentional public, token-authenticated API. Disable it for HTTP serve mode so
+    # agents can connect via the server's public IP / domain. (stdio keeps the default.)
+    from mcp.server.transport_security import TransportSecuritySettings
+
+    mcp.settings.transport_security = TransportSecuritySettings(enable_dns_rebinding_protection=False)
+
     app = mcp.streamable_http_app()  # Starlette app serving MCP at /mcp (+ its lifespan)
     app.router.routes.append(Route("/register", register, methods=["POST"]))
     app.router.routes.append(Route("/healthz", healthz, methods=["GET"]))
